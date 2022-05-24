@@ -1,0 +1,29 @@
+version: '3.1'
+services:
+  cloudiafrontend:
+    image: 'michaelxschneider/cloudia-ui:latest'
+    container_name: cloudia-frontend
+    ports:
+      - '4200:80'
+  cloudiabackend:
+    image: 'michaelxschneider/cloudia-app:latest'
+    container_name: cloudia-backend
+    ports:
+      - '3000:3000'
+    environment:
+      DATABASE_URL: postgresql://postgres:postgres@cloudia-database:5432/cloudia-db?schema=public
+      JWT_SECRET: 'topsecret'
+      AWS_SIMPLE_API: 'https://ec2.shop'
+      ADMIN_MAIL: 'admin@admin.de'
+      ADMIN_PWD: 'top_secret'
+    depends_on:
+      - database
+  cloudiadatabase:
+    image: 'michaelxschneider/cloudia-database:latest'
+    container_name: cloudia-database
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: cloudia-db
+    ports:
+      - '5432:5432'
