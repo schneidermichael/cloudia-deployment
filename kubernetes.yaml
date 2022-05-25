@@ -1,0 +1,144 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    tier: data
+  name: cloudia-database
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      tier: data
+  strategy: {}
+  template:
+    metadata:
+      labels:
+        tier: data
+    spec:
+      containers:
+        - env:
+            - name: POSTGRES_DB
+              value: cloudia-db
+            - name: POSTGRES_PASSWORD
+              value: postgres
+            - name: POSTGRES_USER
+              value: postgres
+          image: michaelxschneider/cloudia-database:latest
+          name: cloudia-database
+          ports:
+            - containerPort: 5432
+          resources: {}
+      restartPolicy: Always
+status: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    tier: data
+  name: cloudia-database
+spec:
+  ports:
+    - name: "5432"
+      port: 5432
+      targetPort: 5432
+  selector:
+    tier: data
+status:
+  loadBalancer: {}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    tier: business
+  name: cloudia-backend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      tier: business
+  strategy: {}
+  template:
+    metadata:
+      labels:
+        tier: business
+    spec:
+      containers:
+        - env:
+            - name: ADMIN_MAIL
+              value: admin@admin.de
+            - name: ADMIN_PWD
+              value: top_secret
+            - name: AWS_SIMPLE_API
+              value: https://ec2.shop
+            - name: DATABASE_URL
+              value: postgresql://postgres:postgres@cloudia-database:5432/cloudia-db?schema=public
+            - name: JWT_SECRET
+              value: topsecret
+          image: michaelxschneider/cloudia-app:latest
+          name: cloudia-backend
+          ports:
+            - containerPort: 3000
+          resources: {}
+      restartPolicy: Always
+status: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    tier: business
+  name: cloudia-backend
+spec:
+  ports:
+    - name: "3000"
+      port: 3000
+      targetPort: 3000
+  selector:
+    tier: business
+status:
+  loadBalancer: {}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    tier: presentation
+  name: cloudia-frontend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      tier: presentation
+  strategy: {}
+  template:
+    metadata:
+      labels:
+        tier: presentation
+    spec:
+      containers:
+        - image: michaelxschneider/cloudia-ui:latest
+          name: cloudia-frontend
+          ports:
+            - containerPort: 80
+          resources: {}
+      restartPolicy: Always
+status: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    tier: presentation
+  name: cloudia-frontend
+spec:
+  ports:
+    - name: "4200"
+      port: 4200
+      targetPort: 80
+  type: NodePort
+  selector:
+    tier: presentation
+status:
+  loadBalancer: {}
