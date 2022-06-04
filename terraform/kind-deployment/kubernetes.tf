@@ -224,8 +224,8 @@ resource "kubernetes_service" "cloudia-frontend" {
       Tier    = "presentation"
     }
     port {
-      name        = "4200"
-      port        = 4200
+      name        = "80"
+      port        = 80
       target_port = 80
     }
     type = "NodePort"

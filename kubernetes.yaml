@@ -134,8 +134,8 @@ metadata:
   name: cloudia-frontend
 spec:
   ports:
-    - name: "4200"
-      port: 4200
+    - name: "80"
+      port: 80
       targetPort: 80
   type: NodePort
   selector:

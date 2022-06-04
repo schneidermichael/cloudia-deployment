@@ -4,7 +4,7 @@ services:
     image: 'michaelxschneider/cloudia-ui:latest'
     container_name: cloudia-frontend
     ports:
-      - '4200:80'
+      - '80:80'
   cloudiabackend:
     #image: 'michaelxschneider/cloudia-app:arm64' - for Karim - date:26-05-2022
     image: 'michaelxschneider/cloudia-app:latest'
