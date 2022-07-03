@@ -1,11 +1,17 @@
 version: '3.1'
 services:
   cloudiafrontend:
+    # build:
+      # context: ../../VisualStudioCode/cloudia-ui
+      # dockerfile: Dockerfile
     image: 'michaelxschneider/cloudia-ui:latest'
     container_name: cloudia-frontend
     ports:
       - '80:80'
   cloudiabackend:
+    # build:
+      # context: ../../VisualStudioCode/cloudia-app
+      # dockerfile: Dockerfile
     #image: 'michaelxschneider/cloudia-app:arm64' - for Karim - date:26-05-2022
     image: 'michaelxschneider/cloudia-app:latest'
     container_name: cloudia-backend
@@ -20,6 +26,9 @@ services:
     depends_on:
       - database
   cloudiadatabase:
+    # build:
+    #   context: ../../IdeaProjects/cloudia-database
+    #   dockerfile: Dockerfile
     image: 'michaelxschneider/cloudia-database:latest'
     container_name: cloudia-database
     environment:
