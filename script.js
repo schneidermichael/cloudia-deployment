@@ -2,6 +2,7 @@ import http from 'k6/http';
 import { sleep } from 'k6';
 
 export default function () {
-  http.get('http://127.0.0.1:61141');
+  http.get('http://localhost:80');
   sleep(1);
 }
+
